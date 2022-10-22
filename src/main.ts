@@ -2,10 +2,10 @@ import 'reflect-metadata';
 import { Container, ContainerModule, interfaces } from 'inversify';
 import { App } from './app';
 import { ExceptionFilter } from './errors/exception.filter';
-import { ILogger } from './logger/logger.interface';
 import { LoggerService } from './logger/logger.service';
 import { TYPES } from './types';
 import { UserController } from './users/user.controller';
+import { UserService } from './users/users.service';
 
 export interface IBootstrapReturn {
 	appContainer: Container;
@@ -15,6 +15,7 @@ export interface IBootstrapReturn {
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind(TYPES.ILogger).to(LoggerService);
 	bind(TYPES.ExceptionFilter).to(ExceptionFilter);
+	bind(TYPES.UserService).to(UserService);
 	bind(TYPES.UserController).to(UserController);
 	bind(TYPES.Application).to(App);
 });
