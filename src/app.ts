@@ -10,7 +10,6 @@ import { json } from 'body-parser';
 @injectable()
 export class App {
 	private app: Express;
-	private server: Server;
 	private port: number;
 
 	constructor(
@@ -40,7 +39,7 @@ export class App {
 		this.useMiddleware();
 		this.userRoutes();
 		this.useExceptionFilters();
-		this.server = this.app.listen(this.port);
+		this.app.listen(this.port);
 		this.logger.log(`Server has started on port ${this.port}`);
 	}
 }
