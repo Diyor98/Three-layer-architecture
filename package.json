@@ -11,6 +11,7 @@
 		"debug": "node --inspect ./dist/main.js",
 		"lint": "eslint ./src/**",
 		"lint:fix": "eslint ./src/** --fix",
+		"test": "jest",
 		"build": "tsc",
 		"generate": "npx prisma generate"
 	},
