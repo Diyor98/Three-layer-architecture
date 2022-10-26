@@ -9,7 +9,6 @@ export class ValidateMiddleware implements IMiddleware {
 	execute({ body }: Request, res: Response, next: NextFunction): void {
 		const instance = plainToClass(this.classToValidate, body);
 		validate(instance).then((errors) => {
-			console.log(errors.length);
 			if (errors.length) {
 				return res.status(422).send(errors);
 			}

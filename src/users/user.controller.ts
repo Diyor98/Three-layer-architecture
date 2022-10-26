@@ -23,6 +23,7 @@ export class UserController extends BaseController implements IUserController {
 				method: 'post',
 				path: '/login',
 				func: this.login,
+				middlewares: [new ValidateMiddleware(UserLoginDto)],
 			},
 			{
 				method: 'post',
@@ -33,9 +34,16 @@ export class UserController extends BaseController implements IUserController {
 		]);
 	}
 
-	login(req: Request<{}, {}, UserLoginDto>, res: Response, next: NextFunction): void {
-		console.log(req.body);
-		next(new HttpError(401, 'Authorization error', 'login'));
+	async login(
+		{ body }: Request<{}, {}, UserLoginDto>,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
+		const isLoggedIn = await this.userService.validateUser(body);
+		if (!isLoggedIn) {
+			return next(new HttpError(401, 'User does not exists', 'login'));
+		}
+		res.status(200).send({ message: 'Logged in' });
 	}
 
 	async register(
