@@ -51,7 +51,7 @@ export class UserController extends BaseController implements IUserController {
 	): Promise<void> {
 		const isLoggedIn = await this.userService.validateUser(body);
 		if (!isLoggedIn) {
-			return next(new HttpError(401, 'User does not exists', 'login'));
+			return next(new HttpError(401, 'User does not exist', 'login'));
 		}
 		const jwt = await this.signJWT(body.email, this.configService.get('SECRET'));
 		res.status(200).send({ jwt });

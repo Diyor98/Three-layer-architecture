@@ -7,6 +7,7 @@ import { IUserRepository } from './user-repository.interface';
 import { IUserService } from './user-service.interface';
 import { User } from './user.entity';
 import { UserService } from './users.service';
+import { UserLoginDto } from './dto/user-login.dto';
 
 const ConfigServiceMock: IConfigService = {
 	get: jest.fn(),
@@ -32,9 +33,7 @@ beforeAll(() => {
 	userService = container.get<IUserService>(TYPES.UserService);
 });
 
-afterEach(() => {
-	jest.clearAllMocks();
-});
+let createdUser: UserModel | null;
 
 describe('User Service', () => {
 	it('should create a user', async () => {
@@ -47,7 +46,7 @@ describe('User Service', () => {
 				id: 1,
 			};
 		});
-		const createdUser = await userService.createUser({
+		createdUser = await userService.createUser({
 			email: 'a@gmail.ru',
 			name: 'diyor',
 			password: '1',
@@ -56,4 +55,27 @@ describe('User Service', () => {
 		expect(createdUser?.id).toEqual(1);
 		expect(createdUser?.password).not.toEqual('1');
 	});
+
+	describe('validateUser', () => {
+		it('should return false if user does not exist', async () => {
+			userRepository.find = jest.fn().mockResolvedValueOnce(null);
+			expect(await userService.validateUser(mockUserLoginDto)).toEqual(false);
+		});
+
+		it('should return true if user password is valid', async () => {
+			userRepository.find = jest.fn().mockResolvedValueOnce(createdUser);
+			expect(await userService.validateUser(mockUserLoginDto)).toEqual(true);
+		});
+		it('should return false if user password is not valid', async () => {
+			userRepository.find = jest.fn().mockResolvedValueOnce(createdUser);
+			expect(
+				await userService.validateUser({ email: mockUserLoginDto.email, password: '2' }),
+			).toEqual(false);
+		});
+	});
 });
+
+const mockUserLoginDto: UserLoginDto = {
+	email: 'a@gmail.com',
+	password: '1',
+};
