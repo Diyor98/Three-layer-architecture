@@ -3,3 +3,4 @@
 .env
 /prisma/deb.db
 /prisma/deb.db-journal  
+coverage
