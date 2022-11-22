@@ -3,8 +3,6 @@ import { ParamsDictionary } from 'express-serve-static-core';
 import { inject } from 'inversify';
 import { JwtPayload, verify } from 'jsonwebtoken';
 import { ParsedQs } from 'qs';
-import { IConfigService } from '../config/config.service.interface';
-import { TYPES } from '../types';
 import { IMiddleware } from './middleware.interface';
 
 export class AuthMiddleware implements IMiddleware {

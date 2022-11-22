@@ -1,4 +1,5 @@
 import express, { Express } from 'express';
+import { Server } from 'http';
 import { inject, injectable } from 'inversify';
 import { ExceptionFilter } from './errors/exception.filter';
 import { ILogger } from './logger/logger.interface';
@@ -11,8 +12,9 @@ import { ConfigService } from './config/config.service';
 
 @injectable()
 export class App {
-	private app: Express;
+	readonly app: Express;
 	private port: number;
+	private server: Server;
 
 	constructor(
 		@inject(TYPES.ILogger) private readonly logger: ILogger,
@@ -46,7 +48,12 @@ export class App {
 		this.userRoutes();
 		this.useExceptionFilters();
 		await this.prismaService.connect();
-		this.app.listen(this.port);
+		this.server = this.app.listen(this.port);
 		this.logger.log(`Server has started on port ${this.port}`);
+	}
+
+	public async close(): Promise<void> {
+		await this.prismaService.disconnect();
+		this.server.close();
 	}
 }
